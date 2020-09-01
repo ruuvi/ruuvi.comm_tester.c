@@ -11,7 +11,7 @@
 #ifndef RUUVI_ESP
 #include <linux/types.h>
 #else
-#include "ruuvidongle.h"
+#include "ruuvi_gateway.h"
 #endif
 /***USER_DEFINES***/
 /*start*/

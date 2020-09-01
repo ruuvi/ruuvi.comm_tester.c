@@ -18,7 +18,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include "ruuvidongle.h"
+#include "ruuvi_gateway.h"
 #include "ruuvi_board_gwesp.h"
 #endif
 #include "ruuvi_endpoints.h"
@@ -70,7 +70,7 @@ static int send_msg(uint8_t *data,
         print_dbgmsgnofunc("0x%02x ",data[i]);
     }
 #else
-            print_dbgmshexdump((char*)&data[0],
+            print_dbgmsghexdump((char*)&data[0],
                                 size);
 #endif
     print_dbgmsgnofuncnoarg("\n");
@@ -154,7 +154,7 @@ static void rx_parse_task (void * arg)
                print_dbgmsgnofunc("0x%02x ",(*(uint8_t*)&terminal.rx_buffer[i]));
             }
 #else
-            print_dbgmshexdump((char*)&terminal.rx_buffer[0],
+            print_dbgmsghexdump((char*)&terminal.rx_buffer[0],
                                 terminal.size);
 #endif
 

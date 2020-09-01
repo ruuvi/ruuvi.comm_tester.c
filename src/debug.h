@@ -12,7 +12,7 @@
 #ifndef RUUVI_ESP
 #include <linux/types.h>
 #else
-#include "ruuvidongle.h"
+#include "ruuvi_gateway.h"
 #include "esp_log.h"
 #endif
 #include <stdio.h>
@@ -40,7 +40,7 @@
         ESP_LOGI ("terminal_dbg", str, ##args)
     #define print_dbgmsgnofuncnoarg(str)	\
         ESP_LOGI ("terminal_dbg", str)
-    #define print_dbgmshexdump(data, numBytes)	\
+    #define print_dbgmsghexdump(data, numBytes)	\
         ESP_LOG_BUFFER_HEXDUMP ("terminal_dbg", data, numBytes, ESP_LOG_INFO);
 #endif
 #else
@@ -49,7 +49,7 @@
     #define print_dbgmsgnofunc(str, ...)
     #define print_dbgmsgnofuncnoarg(str)
 #ifdef RUUVI_ESP
-    #define print_dbgmshexdump(data, numBytes)
+    #define print_dbgmsghexdump(data, numBytes)
 #endif
 #endif
 
@@ -79,7 +79,7 @@
     ESP_LOGI ("terminal_log", str, ##args)
 #define print_logmsgnofuncnoarg(str)	\
     ESP_LOGI ("terminal_log", str)
-#define print_logmshexdump(data, numBytes)	\
+#define print_logmsghexdump(data, numBytes)	\
     ESP_LOG_BUFFER_HEXDUMP ("terminal_log", data, numBytes, ESP_LOG_INFO);
 #define print_errmsg(str, args...) \efine print_errmsg(str, args...) \
     ESP_LOGE ("terminal_err", str, __func__, ##args)
@@ -89,7 +89,7 @@
     ESP_LOGE ("terminal_err", str, ##args)
 #define print_errmsgnofuncnoarg(str)	\
     ESP_LOGE ("terminal_err", str)
-#define print_errmshexdump(data, numBytes)	\
+#define print_errmsghexdump(data, numBytes)	\
     ESP_LOG_BUFFER_HEXDUMP ("terminal_err", data, numBytes, ESP_LOG_ERROR)
 #endif
 

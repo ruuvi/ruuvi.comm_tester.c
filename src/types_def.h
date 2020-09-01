@@ -12,7 +12,7 @@
 #ifndef RUUVI_ESP
 #include <linux/types.h>
 #else
-#include "ruuvidongle.h"
+#include "ruuvi_gateway.h"
 #endif
 
 typedef struct __api_callbacks_fn_t {

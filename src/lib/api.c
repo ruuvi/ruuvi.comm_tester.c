@@ -287,7 +287,7 @@ static int api_report_callback(const __u8 * const buffer)
                 print_logmsgnofunc("%02x ",uart_payload.params.adv.adv[i]);
             }
 #else
-            print_logmshexdump((char*)&uart_payload.params.adv.adv[0],
+            print_logmsghexdump((char*)&uart_payload.params.adv.adv[0],
                                 uart_payload.params.adv.adv_len);
 #endif
             print_logmsgnofuncnoarg("\n");
