@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <unistd.h>
-#include <fcntl.h> 
+#include <fcntl.h>
 #include <termios.h>
-#include <string.h> 
+#include <string.h>
 #include <signal.h>
 #include <stdlib.h>
 
@@ -16,23 +16,24 @@
 #include "ruuvi_endpoint_ca_uart.h"
 /*end*/
 
-#define DEFAULT_DEVICE_COM "/dev/ttyUSB0"
-#define PAYLOAD_INPUT_YES 1
-#define PAYLOAD_INPUT_NO 0
-#define INVALID_PARAM_NUM 255
-#define MAX_PARAMS_NUM_SIZE  255
-#define IS_PAYLOAD_SET(x) (x->is_set)
+#define DEFAULT_DEVICE_COM  "/dev/ttyUSB0"
+#define PAYLOAD_INPUT_YES   1
+#define PAYLOAD_INPUT_NO    0
+#define INVALID_PARAM_NUM   255
+#define MAX_PARAMS_NUM_SIZE 255
+#define IS_PAYLOAD_SET(x)   (x->is_set)
 
-#define DEFAULT_FLTR_ID_NUM             0
-#define DEFAULT_FLTR_TAGS_NUM           1
-#define DEFAULT_CODED_PHY_NUM           2
-#define DEFAULT_EXT_PAYLOAD_NUM         3
-#define DEFAULT_SCAN_PHY_NUM            4
-#define DEFAULT_CH_37_NUM               5
-#define DEFAULT_CH_38_NUM               6
-#define DEFAULT_CH_39_NUM               7
+#define DEFAULT_FLTR_ID_NUM     0
+#define DEFAULT_FLTR_TAGS_NUM   1
+#define DEFAULT_CODED_PHY_NUM   2
+#define DEFAULT_EXT_PAYLOAD_NUM 3
+#define DEFAULT_SCAN_PHY_NUM    4
+#define DEFAULT_CH_37_NUM       5
+#define DEFAULT_CH_38_NUM       6
+#define DEFAULT_CH_39_NUM       7
 
-static void help(void)
+static void
+help(void)
 {
     print_logmsgnofuncnoarg("Help:\n");
     print_logmsgnofuncnoarg("-d : device COM port\n");
@@ -50,7 +51,8 @@ static void help(void)
     print_logmsgnofuncnoarg("-h : help\n");
 }
 
-static void signalHandlerShutdown(int sig)
+static void
+signalHandlerShutdown(int sig)
 {
     terminal_close();
     exit(0);
@@ -59,8 +61,8 @@ static void signalHandlerShutdown(int sig)
 typedef struct
 {
     __u32 payload;
-    __u8 is_set;
-}comm_tester_param_input_t;
+    __u8  is_set;
+} comm_tester_param_input_t;
 
 typedef struct
 {
@@ -72,60 +74,50 @@ typedef struct
     comm_tester_param_input_t ch_37_state;
     comm_tester_param_input_t ch_38_state;
     comm_tester_param_input_t ch_39_state;
-    __u32 all_state;
-}comm_tester_input_t;
+    __u32                     all_state;
+} comm_tester_input_t;
 
-comm_tester_input_t in;
+comm_tester_input_t        in;
 comm_tester_param_input_t *in_array[] = {
-    &in.fltr_id,
-    &in.fltr_tags_state,
-    &in.coded_phy_state,
-    &in.ext_payload_state,
-    &in.scan_phy_state,
-    &in.ch_37_state,
-    &in.ch_38_state,
-    &in.ch_39_state,
+    &in.fltr_id,        &in.fltr_tags_state, &in.coded_phy_state, &in.ext_payload_state,
+    &in.scan_phy_state, &in.ch_37_state,     &in.ch_38_state,     &in.ch_39_state,
 };
 
-__u32 cmd_array[] =
-{
-    RE_CA_UART_SET_FLTR_ID,
-    RE_CA_UART_SET_FLTR_TAGS,
-    RE_CA_UART_SET_CODED_PHY,
-    RE_CA_UART_SET_EXT_PAYLOAD,
-    RE_CA_UART_SET_SCAN_1MB_PHY,
-    RE_CA_UART_SET_CH_37,
-    RE_CA_UART_SET_CH_38,
-    RE_CA_UART_SET_CH_39,
+__u32 cmd_array[] = {
+    RE_CA_UART_SET_FLTR_ID,      RE_CA_UART_SET_FLTR_TAGS, RE_CA_UART_SET_CODED_PHY, RE_CA_UART_SET_EXT_PAYLOAD,
+    RE_CA_UART_SET_SCAN_1MB_PHY, RE_CA_UART_SET_CH_37,     RE_CA_UART_SET_CH_38,     RE_CA_UART_SET_CH_39,
 };
 
-static void set_param(comm_tester_param_input_t *p_in,
-                      char *argv)
+static void
+set_param(comm_tester_param_input_t *p_in, char *argv)
 {
     p_in->payload = atoi(argv);
-    p_in->is_set = PAYLOAD_INPUT_YES;
+    p_in->is_set  = PAYLOAD_INPUT_YES;
 }
 
-
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
-    int res=0;
-    __u32 i=0;
+    int   res       = 0;
+    __u32 i         = 0;
     char *deviceCom = DEFAULT_DEVICE_COM;
-    __u8 mode=0;
-    __u8 rx=0;
+    __u8  mode      = 0;
+    __u8  rx        = 0;
     __u32 param_num;
-    __u8 ignore_report = 0;
+    __u8  ignore_report = 0;
     print_dbgmsgnoarg("Enter\n");
 
-    while(i < argc){
-        if (argv[i][0] == '-'){
+    while (i < argc)
+    {
+        if (argv[i][0] == '-')
+        {
             param_num = INVALID_PARAM_NUM;
-            switch (argv[i][1]){
+            switch (argv[i][1])
+            {
                 case 'D':
                 case 'd':
-                    if ((argv[i+1]) != NULL)
-                        deviceCom = argv[i+1];
+                    if ((argv[i + 1]) != NULL)
+                        deviceCom = argv[i + 1];
                     break;
                 case 'b':
                 case 'B':
@@ -161,7 +153,7 @@ int main(int argc, char *argv[])
                     break;
                 case 'c':
                 case 'C':
-                    switch(argv[i][2])
+                    switch (argv[i][2])
                     {
                         case '7':
                             param_num = DEFAULT_CH_37_NUM;
@@ -182,11 +174,10 @@ int main(int argc, char *argv[])
                     help();
                     return (-1);
             }
-            if ((param_num != INVALID_PARAM_NUM)
-                    && ((argv[i+1]) != NULL))
+            if ((param_num != INVALID_PARAM_NUM) && ((argv[i + 1]) != NULL))
             {
                 in.all_state |= (1U << param_num);
-                set_param(in_array[param_num], argv[i+1]);
+                set_param(in_array[param_num], argv[i + 1]);
             }
         }
         i++;
@@ -205,57 +196,60 @@ int main(int argc, char *argv[])
         signal(SIGINT, signalHandlerShutdown);
         signal(SIGKILL, signalHandlerShutdown);
 
-        if (terminal_open(deviceCom) == 0){
+        if (terminal_open(deviceCom) == 0)
+        {
             res = api_process(ignore_report);
             terminal_close();
-        }else{
+        }
+        else
+        {
             print_errmsgnoarg("No device\n");
             res = (-1);
         }
     }
     else
     {
-        if (terminal_open(deviceCom) == 0){
+        if (terminal_open(deviceCom) == 0)
+        {
 
             if (in.all_state >= MAX_PARAMS_NUM_SIZE)
             {
-                res = api_send_all(RE_CA_UART_SET_ALL,
-                                  (__u16)in_array[DEFAULT_FLTR_ID_NUM]->payload,
-                                  (__u8)in_array[DEFAULT_FLTR_TAGS_NUM]->payload,
-                                  (__u8)in_array[DEFAULT_CODED_PHY_NUM]->payload,
-                                  (__u8)in_array[DEFAULT_EXT_PAYLOAD_NUM]->payload,
-                                  (__u8)in_array[DEFAULT_SCAN_PHY_NUM]->payload,
-                                  (__u8)in_array[DEFAULT_CH_37_NUM]->payload,
-                                  (__u8)in_array[DEFAULT_CH_38_NUM]->payload,
-                                  (__u8)in_array[DEFAULT_CH_39_NUM]->payload);
+                res = api_send_all(
+                    RE_CA_UART_SET_ALL,
+                    (__u16)in_array[DEFAULT_FLTR_ID_NUM]->payload,
+                    (__u8)in_array[DEFAULT_FLTR_TAGS_NUM]->payload,
+                    (__u8)in_array[DEFAULT_CODED_PHY_NUM]->payload,
+                    (__u8)in_array[DEFAULT_EXT_PAYLOAD_NUM]->payload,
+                    (__u8)in_array[DEFAULT_SCAN_PHY_NUM]->payload,
+                    (__u8)in_array[DEFAULT_CH_37_NUM]->payload,
+                    (__u8)in_array[DEFAULT_CH_38_NUM]->payload,
+                    (__u8)in_array[DEFAULT_CH_39_NUM]->payload);
             }
             else
             {
-                for (__u8 ii = 0; ii < (sizeof(in_array)/sizeof(in_array[0])); ii++)
+                for (__u8 ii = 0; ii < (sizeof(in_array) / sizeof(in_array[0])); ii++)
                 {
-                    if(IS_PAYLOAD_SET(in_array[ii]))
+                    if (IS_PAYLOAD_SET(in_array[ii]))
                     {
                         if (cmd_array[ii] == RE_CA_UART_SET_FLTR_ID)
                         {
-                            res = api_send_fltr_id(cmd_array[ii],
-                                                   (__u16)in_array[ii]->payload);
-
+                            res = api_send_fltr_id(cmd_array[ii], (__u16)in_array[ii]->payload);
                         }
                         else
                         {
-                            res = api_send_bool_payload(cmd_array[ii],
-                                                        (__u8)in_array[ii]->payload);
+                            res = api_send_bool_payload(cmd_array[ii], (__u8)in_array[ii]->payload);
                         }
                     }
                 }
             }
 
             terminal_close();
-        }else{
+        }
+        else
+        {
             print_errmsgnoarg("No device\n");
             res = (-1);
         }
-
     }
     print_dbgmsgnoarg("End\n");
     return res;

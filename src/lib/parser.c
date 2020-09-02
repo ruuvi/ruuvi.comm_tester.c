@@ -15,19 +15,19 @@
 
 /***USER_VARIABLES***/
 /*start*/
-api_callbacks_fn_t parser_callback_func_tbl_null ={
-    .ApiAckCallback     = NULL,
-    .ApiReportCallback  = NULL,
+api_callbacks_fn_t parser_callback_func_tbl_null = {
+    .ApiAckCallback    = NULL,
+    .ApiReportCallback = NULL,
 };
 
-api_callbacks_fn_t *p_parser_callback_func_tbl =
-        &parser_callback_func_tbl_null;
+api_callbacks_fn_t *p_parser_callback_func_tbl = &parser_callback_func_tbl_null;
 /*end*/
 
 /***USER_STATIC_FUNCTIONS***/
 /*start*/
 /*end*/
-int parse_callbacks_unreg()
+int
+parse_callbacks_unreg()
 {
     print_dbgmsgnoarg("Enter\n");
     p_parser_callback_func_tbl = &parser_callback_func_tbl_null;
@@ -35,22 +35,27 @@ int parse_callbacks_unreg()
     return 0;
 }
 
-int parse_callbacks_reg(void *p_callback)
+int
+parse_callbacks_reg(void *p_callback)
 {
-    int res=0;
+    int res = 0;
     print_dbgmsgnoarg("Enter\n");
     if ((api_callbacks_fn_t *)p_callback != NULL)
     {
         p_parser_callback_func_tbl = (api_callbacks_fn_t *)p_callback;
-    }else{
+    }
+    else
+    {
         print_errmsgnofuncnoarg("Nullptr\n");
-        res=(-1);
+        res = (-1);
     }
     print_dbgmsgnoarg("End\n");
     return res;
 }
 
-int parse(__u8 *buffer) {
+int
+parse(__u8 *buffer)
+{
     int res = -1;
     switch (buffer[RE_CA_UART_CMD_INDEX])
     {
