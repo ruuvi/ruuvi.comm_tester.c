@@ -1,5 +1,25 @@
 cmake_minimum_required(VERSION 3.7)
 
+if(${ESP_PLATFORM})
+
+string(APPEND CMAKE_C_FLAGS " -DRUUVI_ESP")
+idf_component_register(
+        SRCS
+            src/drv/terminal.c
+            src/lib/api.c
+            src/lib/parser.c
+        INCLUDE_DIRS
+            src
+            src/drv
+            src/lib
+        INCLUDE_DIRS
+            ../../main/includes
+            ../../components/ruuvi.boards.c
+            ../../components/ruuvi.endpoints.c/src
+)
+
+else()
+
 project(ruuvi_comm_tester)
 set(ProjectId ruuvi_comm_tester)
 
@@ -11,10 +31,12 @@ set(RUUVI_DRV_SOURCES
         src/drv/terminal.c
 )
 
+set(COMPONENTS ../../components)
+
 set(RUUVI_LIB_SOURCES
         src/lib/api.c
         src/lib/parser.c
-        ../ruuvi.endpoints.c/src/ruuvi_endpoint_ca_uart.c
+        ${COMPONENTS}/ruuvi.endpoints.c/src/ruuvi_endpoint_ca_uart.c
 )
 
 include_directories(
@@ -23,9 +45,8 @@ include_directories(
         src/app
         src/lib
         src/drv
-        ../ruuvi.endpoints.c/src
+        ${COMPONENTS}/ruuvi.endpoints.c/src
 )
-
 
 add_executable(${ProjectId}
         ${RUUVI_APP_SOURCES}
@@ -54,3 +75,5 @@ target_compile_options(${ProjectId} PUBLIC
 target_link_libraries(${ProjectId}
         pthread
 )
+
+endif()
