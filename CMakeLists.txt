@@ -15,7 +15,7 @@ idf_component_register(
         INCLUDE_DIRS
             ../../main/includes
             ../../components/ruuvi.boards.c
-            ../../components/ruuvi.endpoints.c/src
+            components/ruuvi.endpoints.c/src
 )
 
 else()
@@ -31,7 +31,7 @@ set(RUUVI_DRV_SOURCES
         src/drv/terminal.c
 )
 
-set(COMPONENTS ../../components)
+set(COMPONENTS components)
 
 set(RUUVI_LIB_SOURCES
         src/lib/api.c
@@ -40,7 +40,6 @@ set(RUUVI_LIB_SOURCES
 )
 
 include_directories(
-#        /usr/include
         src
         src/app
         src/lib
