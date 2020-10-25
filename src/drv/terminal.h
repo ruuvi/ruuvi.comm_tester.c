@@ -8,12 +8,14 @@
 
 #ifndef TERMINAL_H_
 #define TERMINAL_H_
+
+#include <stdint.h>
+#include <stdbool.h>
+
 #ifndef RUUVI_ESP
 #include <linux/types.h>
-#include <stdbool.h>
-#else
-#include "ruuvi_gateway.h"
 #endif
+
 /***USER_DEFINES***/
 /*start*/
 #ifndef RUUVI_ESP

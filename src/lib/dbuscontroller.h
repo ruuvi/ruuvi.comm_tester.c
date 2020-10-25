@@ -9,11 +9,11 @@
 #ifndef DBUSCONTROLLER_H_
 #define DBUSCONTROLLER_H_
 
+#include <stdint.h>
+#include <stdbool.h>
+
 #ifndef RUUVI_ESP
 #include <linux/types.h>
-#include <stdbool.h>
-#else
-#include "ruuvi_gateway.h"
 #endif
 
 int

@@ -1,10 +1,10 @@
+#include <stdint.h>
+#include <string.h>
 #ifndef RUUVI_ESP
 #include <stdio.h>
-#include <stdint.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
-#include <string.h>
 #include <pthread.h>
 #else
 #include "freertos/FreeRTOS.h"
@@ -15,10 +15,8 @@
 #include "esp_err.h"
 #include "driver/uart.h"
 #include "driver/gpio.h"
-#include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include "ruuvi_gateway.h"
 #include "ruuvi_board_gwesp.h"
 #endif
 #include "ruuvi_endpoints.h"

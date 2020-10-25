@@ -16,9 +16,6 @@
 #include "formated_output.h"
 #include "dbuscontroller.h"
 #include "ruuvi_endpoint_ca_uart.h"
-#ifdef RUUVI_ESP
-#include "adv_post.h"
-#endif
 /*end*/
 
 /***USER_DEFINES***/

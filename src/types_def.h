@@ -9,11 +9,10 @@
 #ifndef TYPES_DEF_H_
 #define TYPES_DEF_H_
 
+#include <stdint.h>
+
 #ifndef RUUVI_ESP
 #include <linux/types.h>
-#include <stdint.h>
-#else
-#include "ruuvi_gateway.h"
 #endif
 
 // DBus comm_tester settings

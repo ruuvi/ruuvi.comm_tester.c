@@ -12,7 +12,6 @@
 #ifndef RUUVI_ESP
 #include <linux/types.h>
 #else
-#include "ruuvi_gateway.h"
 #include "esp_log.h"
 #endif
 #include <stdio.h>

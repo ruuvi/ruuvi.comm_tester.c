@@ -9,11 +9,10 @@
 #ifndef API_H_
 #define API_H_
 
+#include <stdint.h>
+
 #ifndef RUUVI_ESP
 #include <linux/types.h>
-#include <stdint.h>
-#else
-#include "ruuvi_gateway.h"
 #endif
 
 /***USER_FUNCTIONS**/

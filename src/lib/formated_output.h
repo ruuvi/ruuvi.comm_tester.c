@@ -9,10 +9,10 @@
 #ifndef FORMATED_OUTPUT_H_
 #define FORMATED_OUTPUT_H_
 
+#include <stdint.h>
+
 #ifndef RUUVI_ESP
 #include <linux/types.h>
-#else
-#include "ruuvi_gateway.h"
 #endif
 
 /***USER_FUNCTIONS***/

@@ -9,10 +9,10 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
+#include <stdint.h>
+
 #ifndef RUUVI_ESP
 #include <linux/types.h>
-#else
-#include "ruuvi_gateway.h"
 #endif
 
 /***USER_FUNCTIONS***/
