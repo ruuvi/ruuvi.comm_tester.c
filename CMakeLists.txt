@@ -8,14 +8,13 @@ idf_component_register(
             src/drv/terminal.c
             src/lib/api.c
             src/lib/parser.c
-	    src/lib/dbuscontroller.c
-	    src/lib/formated_output.c
+            src/lib/dbuscontroller.c
+            src/lib/formated_output.c
         INCLUDE_DIRS
             src
             src/drv
             src/lib
         INCLUDE_DIRS
-            ../../main/includes
             ../../components/ruuvi.boards.c
             components/ruuvi.endpoints.c/src
 )
