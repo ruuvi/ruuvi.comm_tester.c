@@ -57,7 +57,7 @@ adv_callbacks_fn_t adv_callback_func_tbl_null = {
 
 adv_callbacks_fn_t *p_adv_callback_func_tbl = &adv_callback_func_tbl_null;
 
-uint8_t report_state = 0;
+static bool g_flag_dont_print_output_report = false;
 
 /*end*/
 
@@ -304,7 +304,7 @@ api_report_callback(const uint8_t *const buffer)
         {
             p_adv_callback_func_tbl->AdvReportCallback((void *)&uart_payload);
         }
-        if (!report_state)
+        if (!g_flag_dont_print_output_report)
         {
             formated_output_report((void *)&uart_payload);
         }
@@ -333,10 +333,10 @@ api_get_all_callback(const uint8_t *const buffer)
 /*end*/
 
 int8_t
-api_process(uint8_t state)
+api_process(const bool flag_dont_print_output_report)
 {
     print_dbgmsgnoarg("Enter\n");
-    report_state = state;
+    g_flag_dont_print_output_report = flag_dont_print_output_report;
     parse_callbacks_reg((void *)&parser_callback_func_tbl);
 #ifndef RUUVI_ESP
     while (1)

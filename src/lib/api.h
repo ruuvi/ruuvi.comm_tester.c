@@ -18,7 +18,7 @@
 /***USER_FUNCTIONS**/
 /*start*/
 int8_t
-api_process(uint8_t state);
+api_process(const bool flag_dont_print_output_report);
 int8_t
 api_send_get_device_id(uint32_t cmd);
 int8_t
