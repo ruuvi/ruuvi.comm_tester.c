@@ -35,6 +35,8 @@ static int
 api_id_callback(const uint8_t *const buffer);
 static int
 api_report_callback(const uint8_t *const buffer);
+static int
+api_get_all_callback(const uint8_t *const buffer);
 /*end*/
 
 /***USER_VARIABLES***/
@@ -43,12 +45,14 @@ api_callbacks_fn_t parser_callback_func_tbl = {
     .ApiAckCallback    = api_ack_callback,
     .ApiReportCallback = api_report_callback,
     .ApiIdCallback     = api_id_callback,
+    .ApiGetAllCallback = api_get_all_callback,
 };
 
 adv_callbacks_fn_t adv_callback_func_tbl_null = {
     .AdvAckCallback    = NULL,
     .AdvReportCallback = NULL,
-    .AdvIdCallback = NULL,
+    .AdvIdCallback     = NULL,
+    .AdvGetAllCallback = NULL,
 };
 
 adv_callbacks_fn_t *p_adv_callback_func_tbl = &adv_callback_func_tbl_null;
@@ -304,6 +308,24 @@ api_report_callback(const uint8_t *const buffer)
         {
             formated_output_report((void *)&uart_payload);
         }
+    }
+    return res;
+}
+
+static int
+api_get_all_callback(const uint8_t *const buffer)
+{
+    int                  res          = -1;
+    re_ca_uart_payload_t uart_payload = { 0 };
+
+    if (RE_SUCCESS == re_ca_uart_decode((uint8_t *)buffer, &uart_payload))
+    {
+        res = 0;
+        if (NULL != p_adv_callback_func_tbl->AdvGetAllCallback)
+        {
+            p_adv_callback_func_tbl->AdvGetAllCallback((void *)&uart_payload);
+        }
+        print_logmsgnofuncnoarg("-----GET_ALL-----\n");
     }
     return res;
 }

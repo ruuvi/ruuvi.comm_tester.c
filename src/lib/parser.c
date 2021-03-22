@@ -19,6 +19,7 @@ api_callbacks_fn_t parser_callback_func_tbl_null = {
     .ApiAckCallback    = NULL,
     .ApiReportCallback = NULL,
     .ApiIdCallback     = NULL,
+    .ApiGetAllCallback = NULL,
 };
 
 api_callbacks_fn_t *p_parser_callback_func_tbl = &parser_callback_func_tbl_null;
@@ -76,6 +77,12 @@ parse(uint8_t *buffer)
             if (NULL != p_parser_callback_func_tbl->ApiAckCallback)
             {
                 res = p_parser_callback_func_tbl->ApiIdCallback(buffer);
+            }
+            break;
+        case RE_CA_UART_GET_ALL:
+            if (NULL != p_parser_callback_func_tbl->ApiGetAllCallback)
+            {
+                res = p_parser_callback_func_tbl->ApiGetAllCallback(buffer);
             }
             break;
         default:

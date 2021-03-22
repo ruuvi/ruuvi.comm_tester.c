@@ -22,6 +22,7 @@ adv_callbacks_fn_t adv_callback_func_tbl = {
     .AdvAckCallback    = dbus_send_ack,
     .AdvReportCallback = NULL,
     .AdvIdCallback     = dbus_send_device_id,
+    .AdvGetAllCallback = NULL,
 };
 
 int

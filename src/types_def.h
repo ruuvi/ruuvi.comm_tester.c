@@ -30,6 +30,7 @@ typedef struct __api_callbacks_fn_t
     int (*ApiAckCallback)(const uint8_t *const buffer);
     int (*ApiReportCallback)(const uint8_t *const buffer);
     int (*ApiIdCallback)(const uint8_t *const buffer);
+    int (*ApiGetAllCallback)(const uint8_t *const buffer);
 } api_callbacks_fn_t;
 
 typedef struct __adv_callbacks_fn_t
@@ -37,6 +38,7 @@ typedef struct __adv_callbacks_fn_t
     void (*AdvAckCallback)(void *arg);
     void (*AdvReportCallback)(void *arg);
     void (*AdvIdCallback)(void *arg);
+    void (*AdvGetAllCallback)(void *arg);
 } adv_callbacks_fn_t;
 
 #endif /* TYPES_DEF_H_ */
