@@ -77,7 +77,7 @@ send_msg(uint8_t *data, uint8_t size)
 #ifndef RUUVI_ESP
     if (size != write(terminal.fd, &data[0], size))
 #else
-    if (size != uart_write_bytes(UART_NUM_1,(char*)&data[0], size))
+    if (size != uart_write_bytes(UART_NUM_1, (char *)&data[0], size))
 #endif
     {
         print_errmsgnoarg("Write size incorrect\n");
@@ -90,8 +90,9 @@ send_msg(uint8_t *data, uint8_t size)
 static void
 wait(terminal_struct_t *p_terminal, uint32_t timeout)
 {
-    int     rx_size = 0;
-    int     rx_size_it;
+    int rx_size = 0;
+    int rx_size_it;
+
     static uint8_t rcv_data[RX_BUFFER_MAX_SIZE];
     memset(rcv_data, 0, RX_BUFFER_MAX_SIZE);
     while (p_terminal->size != 0)

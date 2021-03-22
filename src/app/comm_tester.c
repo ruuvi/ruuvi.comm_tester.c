@@ -77,7 +77,7 @@ typedef struct
     comm_tester_param_input_t ch_37_state;
     comm_tester_param_input_t ch_38_state;
     comm_tester_param_input_t ch_39_state;
-    uint32_t                     all_state;
+    uint32_t                  all_state;
 } comm_tester_input_t;
 
 comm_tester_input_t        in;
@@ -101,14 +101,14 @@ set_param(comm_tester_param_input_t *p_in, char *argv)
 int
 main(int argc, char *argv[])
 {
-    int   res           = 0;
+    int      res           = 0;
     uint32_t i             = 0;
-    char *deviceCom     = DEFAULT_DEVICE_COM;
+    char *   deviceCom     = DEFAULT_DEVICE_COM;
     uint8_t  mode          = 0;
     uint8_t  rx            = 0;
     uint8_t  get_device_id = 0;
     uint32_t param_num;
-    bool  dbus_create   = false;
+    bool     dbus_create   = false;
     uint8_t  ignore_report = 0;
     print_dbgmsgnoarg("Enter\n");
 
