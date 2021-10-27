@@ -96,7 +96,12 @@ wait(terminal_struct_t *p_terminal, uint32_t timeout)
     static uint8_t rcv_data[RX_BUFFER_MAX_SIZE];
     memset(rcv_data, 0, RX_BUFFER_MAX_SIZE);
     while (p_terminal->size != 0)
-        ;
+    {
+#ifndef RUUVI_ESP
+#else
+        vTaskDelay(1);
+#endif
+    }
     while (1)
     {
 #ifndef RUUVI_ESP
