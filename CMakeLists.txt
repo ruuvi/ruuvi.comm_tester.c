@@ -17,6 +17,8 @@ idf_component_register(
         INCLUDE_DIRS
             ../../components/ruuvi.boards.c
             components/ruuvi.endpoints.c/src
+        REQUIRES
+            ruuvi.endpoints.c
 )
 
 else()
