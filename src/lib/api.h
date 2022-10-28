@@ -10,6 +10,7 @@
 #define API_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifndef RUUVI_ESP
 #include <linux/types.h>
@@ -17,14 +18,19 @@
 
 /***USER_FUNCTIONS**/
 /*start*/
+
 int8_t
 api_process(const bool flag_dont_print_output_report);
+
 int8_t
 api_send_get_device_id(uint32_t cmd);
+
 int8_t
 api_send_fltr_id(uint32_t cmd, uint16_t id);
+
 int8_t
 api_send_bool_payload(uint32_t cmd, uint8_t state);
+
 int8_t
 api_send_all(
     uint32_t cmd,
@@ -36,10 +42,16 @@ api_send_all(
     uint8_t  ch_37_state,
     uint8_t  ch_38_state,
     uint8_t  ch_39_state);
+
+int8_t
+api_send_led_ctrl(const uint16_t time_interval_ms);
+
 int
 api_callbacks_reg(void *p_callback);
+
 int
 api_callbacks_unreg();
+
 /*end*/
 
 #endif /* API_H_ */

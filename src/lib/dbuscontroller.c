@@ -108,7 +108,7 @@ static void
 dbus_send_device_id(void *arg)
 {
     int                   err = 0;
-    DBusMessage *         msg;
+    DBusMessage          *msg;
     DBusMessageIter       args;
     dbus_uint32_t         serial = 0;
     DBusMessageIter       iter_struct;
@@ -184,7 +184,7 @@ static void
 dbus_send_ack(void *arg)
 {
     int                   err = 0;
-    DBusMessage *         msg;
+    DBusMessage          *msg;
     DBusMessageIter       args;
     dbus_uint32_t         serial = 0;
     DBusMessageIter       iter_struct;
@@ -406,7 +406,7 @@ handle_device_id(DBusMessage *msg, uint8_t *payload)
 void
 dbus_check_new_messages(void)
 {
-    DBusMessage *        msg = NULL;
+    DBusMessage         *msg = NULL;
     re_ca_uart_payload_t uart_payload;
     time_t               startTime, endTime;
 

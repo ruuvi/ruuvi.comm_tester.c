@@ -134,8 +134,9 @@ api_send_fltr_id(uint32_t cmd, uint16_t id)
 
     print_dbgmsgnoarg("Enter\n");
 
-    uart_payload.cmd = (re_ca_uart_cmd_t)cmd;
-    data_length      = sizeof(data);
+    uart_payload.cmd                     = (re_ca_uart_cmd_t)cmd;
+    uart_payload.params.fltr_id_param.id = id;
+    data_length                          = sizeof(data);
 
     if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
     {
@@ -238,6 +239,35 @@ api_send_all(
     }
 
     data_length = sizeof(data);
+
+    if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
+    {
+        res = (-1);
+    }
+    else
+    {
+        terminal_send_msg((uint8_t *)data, data_length);
+#ifndef RUUVI_ESP
+        dbus_check_new_messages();
+#endif
+    }
+    print_dbgmsgnoarg("End\n");
+    return (int8_t)res;
+}
+
+int8_t
+api_send_led_ctrl(const uint16_t time_interval_ms)
+{
+    int8_t               res          = 0;
+    re_ca_uart_payload_t uart_payload = { 0 };
+    uint8_t              data[BUFFER_PAYLOAD_SIZE];
+    uint8_t              data_length;
+
+    print_dbgmsgnoarg("Enter\n");
+
+    uart_payload.cmd                                    = RE_CA_UART_LED_CTRL;
+    uart_payload.params.led_ctrl_param.time_interval_ms = time_interval_ms;
+    data_length                                         = sizeof(data);
 
     if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
     {

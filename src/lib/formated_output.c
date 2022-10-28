@@ -26,8 +26,8 @@ formated_output_ack(void *p_uart_payload)
 {
     re_ca_uart_payload_t *uart_payload          = (re_ca_uart_payload_t *)p_uart_payload;
     char                  ack_state_name[2][32] = {
-        "RE_CA_ACK_OK",
-        "RE_CA_ACK_ERROR",
+                         "RE_CA_ACK_OK",
+                         "RE_CA_ACK_ERROR",
     };
     char ack_cmd_name[33][32] = {
         "RE_CA_UART_NOT_CODED",

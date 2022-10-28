@@ -48,6 +48,7 @@ help(void)
     print_logmsgnofuncnoarg("-c8 : set channel 38 value\n");
     print_logmsgnofuncnoarg("-c9 : set channel 39 value\n");
     print_logmsgnofuncnoarg("-gi : get device id\n");
+    print_logmsgnofuncnoarg("-l <ms> : turn on LED for <ms>\n");
     print_logmsgnofuncnoarg("-o : disable report output\n");
     print_logmsgnofuncnoarg("-r : run receiver mode\n");
     print_logmsgnofuncnoarg("-b : run receiver in backgroung mode\n");
@@ -103,10 +104,11 @@ main(int argc, char *argv[])
 {
     int      res           = 0;
     uint32_t i             = 0;
-    char *   deviceCom     = DEFAULT_DEVICE_COM;
+    char    *deviceCom     = DEFAULT_DEVICE_COM;
     uint8_t  mode          = 0;
     uint8_t  rx            = 0;
     uint8_t  get_device_id = 0;
+    int      led_ctrl      = -1;
     uint32_t param_num;
     bool     dbus_create   = false;
     uint8_t  ignore_report = 0;
@@ -157,6 +159,9 @@ main(int argc, char *argv[])
                 case 'E':
                     param_num = DEFAULT_EXT_PAYLOAD_NUM;
                     break;
+                case 'l':
+                case 'L':
+                    led_ctrl = atoi(argv[i + 1]);
                 case 'g':
                 case 'G':
                     switch (argv[i][2])
@@ -267,6 +272,11 @@ main(int argc, char *argv[])
                 if (get_device_id)
                 {
                     res = api_send_get_device_id(RE_CA_UART_GET_DEVICE_ID);
+                }
+
+                if (led_ctrl >= 0)
+                {
+                    res = api_send_led_ctrl((uint16_t)led_ctrl);
                 }
 
                 terminal_close();
