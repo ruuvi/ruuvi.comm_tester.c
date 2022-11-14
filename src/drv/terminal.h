@@ -38,7 +38,7 @@
 /**USER FUNCTIONS***/
 /*start*/
 int
-terminal_open(char *device_address, bool rx_enable);
+terminal_open(char *device_address, bool rx_enable, int task_priority);
 int
 terminal_close(void);
 int

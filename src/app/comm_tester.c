@@ -208,7 +208,7 @@ main(int argc, char *argv[])
 
     if (0 == dbus_connect(dbus_create))
     {
-
+        const int terminal_task_priority = 1;
         if (rx)
         {
             if (mode)
@@ -222,7 +222,7 @@ main(int argc, char *argv[])
             signal(SIGINT, signalHandlerShutdown);
             signal(SIGKILL, signalHandlerShutdown);
 
-            if (terminal_open(deviceCom, true) == 0)
+            if (terminal_open(deviceCom, true, terminal_task_priority) == 0)
             {
                 res = api_process(ignore_report);
                 terminal_close();
@@ -235,7 +235,7 @@ main(int argc, char *argv[])
         }
         else
         {
-            if (terminal_open(deviceCom, false) == 0)
+            if (terminal_open(deviceCom, false, terminal_task_priority) == 0)
             {
 
                 if (in.all_state >= MAX_PARAMS_NUM_SIZE)

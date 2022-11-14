@@ -224,7 +224,7 @@ rx_task(void *arg)
 }
 
 int
-terminal_open(char *device_address, bool rx_enable)
+terminal_open(char *device_address, bool rx_enable, int task_priority)
 {
 
     print_dbgmsgnoarg("Enter\n");
@@ -281,8 +281,8 @@ terminal_open(char *device_address, bool rx_enable)
     // We won't use a buffer for sending data.
     uart_driver_install(UART_NUM_1, UART_RX_BUF_SIZE * 2, 0, 0, NULL, 0);
 
-    xTaskCreate(rx_task, "uart_rx_task", 1024 * 6, NULL, 1, &terminal.rx_task_manager);
-    xTaskCreate(rx_parse_task, "rx_parse_task", 1024 * 4, NULL, 1, &terminal.rx_parse_task_manager);
+    xTaskCreate(rx_task, "uart_rx_task", 1024 * 6, NULL, task_priority, &terminal.rx_task_manager);
+    xTaskCreate(rx_parse_task, "rx_parse_task", 1024 * 4, NULL, task_priority, &terminal.rx_parse_task_manager);
 #endif
     print_dbgmsgnoarg("End\n");
     return 0;
