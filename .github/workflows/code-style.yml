@@ -22,7 +22,7 @@ jobs:
           sudo apt-get install -y clang-format-14
 
       - name: Run clang-format
-        run: scripts/clang_format_all.sh
+        run: clang_format_all.sh
         
       - name: Check formatting
         run: git diff --exit-code --diff-filter=d --color
