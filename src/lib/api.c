@@ -325,9 +325,10 @@ api_id_callback(const uint8_t *const buffer)
 static int
 api_report_callback(const uint8_t *const buffer)
 {
-    int                  res          = -1;
-    re_ca_uart_payload_t uart_payload = { 0 };
-    if (RE_SUCCESS == re_ca_uart_decode((uint8_t *)buffer, &uart_payload))
+    int                  res           = -1;
+    re_ca_uart_payload_t uart_payload  = { 0 };
+    const re_status_t    decode_status = re_ca_uart_decode((uint8_t *)buffer, &uart_payload);
+    if (RE_SUCCESS == decode_status)
     {
         res = 0;
         if (NULL != p_adv_callback_func_tbl->AdvReportCallback)
@@ -338,6 +339,10 @@ api_report_callback(const uint8_t *const buffer)
         {
             formated_output_report((void *)&uart_payload);
         }
+    }
+    else
+    {
+        print_dbgmsg("re_ca_uart_decode failed, status=%d\n", decode_status);
     }
     return res;
 }
