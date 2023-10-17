@@ -24,6 +24,7 @@
 void
 formated_output_ack(void *p_uart_payload)
 {
+#if UPDATE_DEBUG_MODE
     re_ca_uart_payload_t *uart_payload          = (re_ca_uart_payload_t *)p_uart_payload;
     char                  ack_state_name[2][32] = {
                          "RE_CA_ACK_OK",
@@ -64,9 +65,10 @@ formated_output_ack(void *p_uart_payload)
         "",
         "RE_CA_UART_ACK",
     };
-    print_logmsgnofuncnoarg("-----ACK-----\n");
-    print_logmsgnofunc("CMD: %s\n", ack_cmd_name[(uint8_t)uart_payload->params.ack.cmd]);
-    print_logmsgnofunc("ACK state: %s\n", ack_state_name[(uint8_t)uart_payload->params.ack.ack_state.state]);
+    print_dbgmsgnofuncnoarg("-----ACK-----\n");
+    print_dbgmsgnofunc("CMD: %s\n", ack_cmd_name[(uint8_t)uart_payload->params.ack.cmd]);
+    print_dbgmsgnofunc("ACK state: %s\n", ack_state_name[(uint8_t)uart_payload->params.ack.ack_state.state]);
+#endif
 }
 
 void
