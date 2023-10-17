@@ -68,13 +68,13 @@ parse(uint8_t *buffer)
             }
             break;
         case RE_CA_UART_ADV_RPRT:
-            if (NULL != p_parser_callback_func_tbl->ApiAckCallback)
+            if (NULL != p_parser_callback_func_tbl->ApiReportCallback)
             {
                 res = p_parser_callback_func_tbl->ApiReportCallback(buffer);
             }
             break;
         case RE_CA_UART_DEVICE_ID:
-            if (NULL != p_parser_callback_func_tbl->ApiAckCallback)
+            if (NULL != p_parser_callback_func_tbl->ApiIdCallback)
             {
                 res = p_parser_callback_func_tbl->ApiIdCallback(buffer);
             }
