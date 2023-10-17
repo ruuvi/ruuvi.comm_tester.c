@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          submodules: true
+
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
 
       - name: Run build.sh
         run: ./build.sh
