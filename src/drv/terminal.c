@@ -42,10 +42,7 @@ typedef struct __terminal_struct
     TaskHandle_t rx_parse_task_manager;
     TaskHandle_t rx_task_manager;
 #endif
-    int     size;
-    uint8_t rx_buffer[RX_BUFFER_MAX_SIZE];
-    uint8_t rx_buffer_error[RX_BUFFER_MAX_SIZE << 1];
-    uint8_t rx_buffer_error_index;
+    re_ca_uart_parser_obj_t parser_obj;
 } terminal_struct_t;
 #pragma pack(pop)
 /*end*/
@@ -55,8 +52,12 @@ typedef struct __terminal_struct
 terminal_struct_t terminal;
 /*end*/
 
-static void
-wait(terminal_struct_t *p_terminal, uint32_t timeout);
+static re_ca_uart_parser_message_len_t
+wait_message_from_uart(
+    terminal_struct_t *const    p_terminal,
+    const uint32_t              timeout,
+    re_ca_uart_message_t *const p_message);
+
 static int
 send_msg(uint8_t *data, uint8_t size);
 
@@ -87,51 +88,31 @@ send_msg(uint8_t *data, uint8_t size)
     return res;
 }
 
-static void
-wait(terminal_struct_t *p_terminal, uint32_t timeout)
+static re_ca_uart_parser_message_len_t
+wait_message_from_uart(
+    terminal_struct_t *const    p_terminal,
+    const uint32_t              timeout,
+    re_ca_uart_message_t *const p_message)
 {
-    int rx_size = 0;
     int rx_size_it;
 
-    static uint8_t rcv_data[RX_BUFFER_MAX_SIZE];
-    memset(rcv_data, 0, RX_BUFFER_MAX_SIZE);
-    while (p_terminal->size != 0)
-    {
-#ifndef RUUVI_ESP
-#else
-        vTaskDelay(1);
-#endif
-    }
     while (1)
     {
+        uint8_t byte = 0;
 #ifndef RUUVI_ESP
-        rx_size_it = read(p_terminal->fd, &rcv_data[rx_size], 1);
+        rx_size_it = read(p_terminal->fd, &byte, 1);
 #else
-        rx_size_it = uart_read_bytes(UART_NUM_1, &rcv_data[rx_size], 1, timeout / portTICK_RATE_MS);
+        rx_size_it = uart_read_bytes(UART_NUM_1, &byte, 1, timeout / portTICK_RATE_MS);
 #endif
-
-        if ((rx_size + rx_size_it) > RX_BUFFER_MAX_SIZE)
+        if (1 != rx_size_it)
         {
-            break;
+            parser_handle_timeout(&p_terminal->parser_obj);
+            continue;
         }
 
-        if (rx_size_it > 0)
+        if (parser_handle_byte(&p_terminal->parser_obj, byte))
         {
-            rx_size += rx_size_it;
-            for (int i = (rx_size - rx_size_it); i < rx_size; i++)
-            {
-                if ((*(uint8_t *)&rcv_data[i]) == RE_CA_UART_ETX)
-                {
-                    memcpy(p_terminal->rx_buffer, rcv_data, rx_size);
-                    p_terminal->size = rx_size;
-                    break;
-                }
-            }
-
-            if (p_terminal->size)
-            {
-                break;
-            }
+            return parser_get_message(&p_terminal->parser_obj, p_message);
         }
     }
 }
@@ -151,85 +132,47 @@ terminal_send_msg(uint8_t *data, uint8_t size)
 
 #ifndef RUUVI_ESP
 void *
-th_ctrl_call(void *vargp)
-#else
-static void
-rx_parse_task(void *arg)
-#endif
-{
-#ifndef RUUVI_ESP
-    while (terminal.fd < 0)
-        ;
-#endif
-    while (1)
-    {
-        if (terminal.size)
-        {
-            print_dbgmsgnofuncnoarg("RX: ");
-
-#ifndef RUUVI_ESP
-            for (int i = 0; i < terminal.size; i++)
-            {
-                print_dbgmsgnofunc("0x%02x ", (*(uint8_t *)&terminal.rx_buffer[i]));
-            }
-#else
-            print_dbgmsghexdump((char *)&terminal.rx_buffer[0], terminal.size);
-#endif
-
-            print_dbgmsgnofuncnoarg("\n");
-            if ((-1) == parse((uint8_t *)&terminal.rx_buffer[0]))
-            {
-                memcpy((terminal.rx_buffer_error + terminal.rx_buffer_error_index), terminal.rx_buffer, terminal.size);
-                terminal.rx_buffer_error_index += terminal.size;
-                if (0 == parse((uint8_t *)&terminal.rx_buffer_error[0]))
-                {
-                    memset(terminal.rx_buffer_error, 0, RX_BUFFER_MAX_SIZE << 1);
-                    terminal.rx_buffer_error_index = 0;
-                }
-            }
-            else
-            {
-                memset(terminal.rx_buffer_error, 0, RX_BUFFER_MAX_SIZE << 1);
-                terminal.rx_buffer_error_index = 0;
-            }
-            terminal.size = 0;
-        }
-#ifdef RUUVI_ESP
-        vTaskDelay(1);
-#endif
-    }
-}
-
-#ifndef RUUVI_ESP
-void *
 th_ctrl(void *vargp)
 #else
 static void
 rx_task(void *arg)
 #endif
 {
+    parser_init(&terminal.parser_obj);
+
 #ifndef RUUVI_ESP
     while (terminal.fd < 0)
         ;
 #endif
+    re_ca_uart_message_t message;
     while (1)
     {
-        wait(&terminal, RX_ASK_TIMEOUT);
+        re_ca_uart_parser_message_len_t len = wait_message_from_uart(&terminal, RX_ASK_TIMEOUT, &message);
+        (void)len;
+        print_dbgmsgnofuncnoarg("RX: ");
+
 #ifndef RUUVI_ESP
-        // usleep(100000);
+        for (int i = 0; i < len; i++)
+        {
+            print_dbgmsgnofunc("0x%02x ", (*(uint8_t *)&message.buffer[0]));
+        }
 #else
-        vTaskDelay(1);
+        print_dbgmsghexdump((char *)&message.buffer[0], len);
 #endif
+        if ((-1) == parse((uint8_t *)&message.buffer[0]))
+        {
+            print_dbgmsgnofuncnoarg("RX: parsing failed");
+        }
     }
 }
 
 int
 terminal_open(char *device_address, bool rx_enable, int task_priority)
 {
-
     print_dbgmsgnoarg("Enter\n");
     memset(&terminal, 0, sizeof(terminal_struct_t));
 #ifndef RUUVI_ESP
+    print_dbgmsg("Open UART: %s\n", device_address);
     terminal.fd = open(device_address, O_RDWR);
     if (terminal.fd < 0)
     {
@@ -256,13 +199,10 @@ terminal_open(char *device_address, bool rx_enable, int task_priority)
             settings.c_cflag &= ~(CSIZE | PARENB);
             settings.c_cflag |= CS8;
 
-            terminal.size                  = 0;
-            terminal.rx_buffer_error_index = 0;
             tcsetattr(terminal.fd, TCSANOW, &settings); /* apply the settings */
             tcflush(terminal.fd, TCOFLUSH);
 
             pthread_create(&terminal.thread_id, NULL, th_ctrl, NULL);
-            pthread_create(&terminal.thread_id_call, NULL, th_ctrl_call, NULL);
         }
     }
 #else
@@ -281,8 +221,7 @@ terminal_open(char *device_address, bool rx_enable, int task_priority)
     // We won't use a buffer for sending data.
     uart_driver_install(UART_NUM_1, UART_RX_BUF_SIZE * 2, 0, 0, NULL, 0);
 
-    xTaskCreate(rx_task, "uart_rx_task", 1024 * 2, NULL, task_priority, &terminal.rx_task_manager);
-    xTaskCreate(rx_parse_task, "rx_parse_task", 1024 * 4, NULL, task_priority, &terminal.rx_parse_task_manager);
+    xTaskCreate(rx_task, "uart_rx_task", 1024 * 4, NULL, task_priority, &terminal.rx_task_manager);
 #endif
     print_dbgmsgnoarg("End\n");
     return 0;

@@ -31,7 +31,6 @@
 #define RX_ASK_TIMEOUT     1000   // in 1000us
 #define DEFAULT_BAUDRATE   115200 // in 1000us
 #define UART_RX_BUF_SIZE   1024
-#define BUF_MAX            1000
 #endif
 /*end*/
 

@@ -27,7 +27,7 @@
 #define print_dbgmsgnofunc(str, ...) fprintf(stderr, "" str, ##__VA_ARGS__)
 #define print_dbgmsgnofuncnoarg(str) fprintf(stderr, "%s", str)
 #else
-#define print_dbgmsg(str, args...)          ESP_LOGI("terminal_dbg", str, __func__, ##args)
+#define print_dbgmsg(str, args...)          ESP_LOGI("terminal_dbg", "%s: " str, __func__, ##args)
 #define print_dbgmsgnoarg(str)              ESP_LOGI("terminal_dbg", "%s in %s: ", str, __func__)
 #define print_dbgmsgnofunc(str, args...)    ESP_LOGI("terminal_dbg", str, ##args)
 #define print_dbgmsgnofuncnoarg(str)        ESP_LOGI("terminal_dbg", str)
