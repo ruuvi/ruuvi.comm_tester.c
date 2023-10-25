@@ -148,6 +148,7 @@ rx_task(void *arg)
     while (1)
     {
         re_ca_uart_parser_message_len_t len = wait_message_from_uart(&terminal, RX_ASK_TIMEOUT, &message);
+        (void)len;
         print_dbgmsgnofuncnoarg("RX: ");
 
 #ifndef RUUVI_ESP
@@ -220,7 +221,7 @@ terminal_open(char *device_address, bool rx_enable, int task_priority)
     // We won't use a buffer for sending data.
     uart_driver_install(UART_NUM_1, UART_RX_BUF_SIZE * 2, 0, 0, NULL, 0);
 
-    xTaskCreate(rx_task, "uart_rx_task", 1024 * 2, NULL, task_priority, &terminal.rx_task_manager);
+    xTaskCreate(rx_task, "uart_rx_task", 1024 * 4, NULL, task_priority, &terminal.rx_task_manager);
 #endif
     print_dbgmsgnoarg("End\n");
     return 0;
