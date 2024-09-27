@@ -38,7 +38,7 @@ typedef enum parser_state_e
 /**
  * @brief Standard BLE Broadcast manufacturer specific data payload maximum length
  */
-#define RE_CA_UART_PARSER_RI_COMM_MESSAGE_MAX_LENGTH 230
+#define RE_CA_UART_PARSER_RI_COMM_MESSAGE_MAX_LENGTH 248
 
 /**
  * @brief Parser buffer size
