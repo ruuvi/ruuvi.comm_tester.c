@@ -21,6 +21,9 @@ idf_component_register(
             ruuvi.endpoints.c
 )
 
+target_compile_definitions(${COMPONENT_LIB} PRIVATE RI_ADV_EXTENDED_ENABLED=1)
+target_compile_definitions(__idf_ruuvi.endpoints.c PRIVATE RI_ADV_EXTENDED_ENABLED=1)
+
 else()
 
 project(ruuvi_comm_tester)
@@ -68,6 +71,7 @@ set_target_properties(${ProjectId} PROPERTIES
 
 target_compile_definitions(${ProjectId} PUBLIC
         _DEFAULT_SOURCE
+        RI_ADV_EXTENDED_ENABLED=1
 )
 
 target_compile_options(${ProjectId} PUBLIC
