@@ -76,6 +76,8 @@ parse(const uint8_t *const p_buffer)
             }
             break;
         case RE_CA_UART_ADV_RPRT:
+            // fallthrough
+        case RE_CA_UART_ADV_RPRT2:
             if (NULL != p_parser_callback_func_tbl->ApiReportCallback)
             {
                 res = p_parser_callback_func_tbl->ApiReportCallback(p_buffer);

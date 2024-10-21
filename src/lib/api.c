@@ -20,7 +20,6 @@
 
 /***USER_DEFINES***/
 /*start*/
-#define BUFFER_PAYLOAD_SIZE 204
 /*end*/
 
 /***USER_TYPES**/
@@ -64,10 +63,10 @@ static bool g_flag_dont_print_output_report = false;
 int8_t
 api_send_bool_payload(uint32_t cmd, uint8_t state)
 {
-    int8_t               res          = 0;
-    re_ca_uart_payload_t uart_payload = { 0 };
-    uint8_t              data[BUFFER_PAYLOAD_SIZE];
-    uint8_t              data_length;
+    int8_t                                     res          = 0;
+    re_ca_uart_payload_t                       uart_payload = { 0 };
+    re_ca_uart_mosi_payload_buf_encoded_bool_t data;
+    uint8_t                                    data_length = sizeof(data.buf);
 
     print_dbgmsgnoarg("Enter\n");
 
@@ -82,13 +81,13 @@ api_send_bool_payload(uint32_t cmd, uint8_t state)
     }
     data_length = sizeof(data);
 
-    if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
+    if (RE_SUCCESS != re_ca_uart_encode(data.buf, &data_length, &uart_payload))
     {
         res = (-1);
     }
     else
     {
-        terminal_send_msg((uint8_t *)data, data_length);
+        terminal_send_msg((uint8_t *)data.buf, data_length);
 #ifndef RUUVI_ESP
         dbus_check_new_messages();
 #endif
@@ -100,22 +99,21 @@ api_send_bool_payload(uint32_t cmd, uint8_t state)
 int8_t
 api_send_get_device_id(uint32_t cmd)
 {
-    int8_t               res          = 0;
-    re_ca_uart_payload_t uart_payload = { 0 };
-    uint8_t              data[BUFFER_PAYLOAD_SIZE];
-    uint8_t              data_length;
+    int8_t                                              res          = 0;
+    re_ca_uart_payload_t                                uart_payload = { 0 };
+    re_ca_uart_mosi_payload_buf_encoded_get_device_id_t data;
+    uint8_t                                             data_length = sizeof(data.buf);
 
     print_dbgmsgnoarg("Enter\n");
     uart_payload.cmd = (re_ca_uart_cmd_t)cmd;
-    data_length      = sizeof(data);
 
-    if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
+    if (RE_SUCCESS != re_ca_uart_encode(data.buf, &data_length, &uart_payload))
     {
         res = (-1);
     }
     else
     {
-        terminal_send_msg((uint8_t *)data, data_length);
+        terminal_send_msg((uint8_t *)data.buf, data_length);
 #ifndef RUUVI_ESP
         dbus_check_new_messages();
 #endif
@@ -127,24 +125,23 @@ api_send_get_device_id(uint32_t cmd)
 int8_t
 api_send_fltr_id(uint32_t cmd, uint16_t id)
 {
-    int8_t               res          = 0;
-    re_ca_uart_payload_t uart_payload = { 0 };
-    uint8_t              data[BUFFER_PAYLOAD_SIZE];
-    uint8_t              data_length;
+    int8_t                                        res          = 0;
+    re_ca_uart_payload_t                          uart_payload = { 0 };
+    re_ca_uart_mosi_payload_buf_encoded_set_fltr_id_t data;
+    uint8_t                                       data_length = sizeof(data.buf);
 
     print_dbgmsgnoarg("Enter\n");
 
     uart_payload.cmd                     = (re_ca_uart_cmd_t)cmd;
     uart_payload.params.fltr_id_param.id = id;
-    data_length                          = sizeof(data);
 
-    if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
+    if (RE_SUCCESS != re_ca_uart_encode(data.buf, &data_length, &uart_payload))
     {
         res = (-1);
     }
     else
     {
-        terminal_send_msg((uint8_t *)data, data_length);
+        terminal_send_msg((uint8_t *)data.buf, data_length);
 #ifndef RUUVI_ESP
         dbus_check_new_messages();
 #endif
@@ -158,17 +155,18 @@ api_send_all(
     uint32_t cmd,
     uint16_t fltr_id,
     uint8_t  fltr_tags_state,
-    uint8_t  coded_phy_state,
-    uint8_t  ext_payload_state,
-    uint8_t  scan_phy_state,
+    uint8_t  use_coded_phy,
+    uint8_t  use_2m_phy,
+    uint8_t  use_1m_phy,
     uint8_t  ch_37_state,
     uint8_t  ch_38_state,
-    uint8_t  ch_39_state)
+    uint8_t  ch_39_state,
+    uint8_t  max_adv_len)
 {
     int8_t               res          = 0;
     re_ca_uart_payload_t uart_payload = { 0 };
-    uint8_t              data[BUFFER_PAYLOAD_SIZE];
-    uint8_t              data_length;
+    re_ca_uart_mosi_payload_buf_encoded_all_params_t data;
+    uint8_t              data_length = sizeof(data.buf);
 
     print_dbgmsgnoarg("Enter\n");
 
@@ -184,31 +182,31 @@ api_send_all(
         uart_payload.params.all_params.bools.fltr_tags.state = RE_CA_BOOL_DISABLE;
     }
 
-    if ((bool)coded_phy_state == true)
+    if ((bool)use_coded_phy == true)
     {
-        uart_payload.params.all_params.bools.coded_phy.state = RE_CA_BOOL_ENABLE;
+        uart_payload.params.all_params.bools.use_coded_phy.state = RE_CA_BOOL_ENABLE;
     }
     else
     {
-        uart_payload.params.all_params.bools.coded_phy.state = RE_CA_BOOL_DISABLE;
+        uart_payload.params.all_params.bools.use_coded_phy.state = RE_CA_BOOL_DISABLE;
     }
 
-    if ((bool)ext_payload_state == true)
+    if ((bool)use_2m_phy == true)
     {
-        uart_payload.params.all_params.bools.ext_payload.state = RE_CA_BOOL_ENABLE;
+        uart_payload.params.all_params.bools.use_2m_phy.state = RE_CA_BOOL_ENABLE;
     }
     else
     {
-        uart_payload.params.all_params.bools.ext_payload.state = RE_CA_BOOL_DISABLE;
+        uart_payload.params.all_params.bools.use_2m_phy.state = RE_CA_BOOL_DISABLE;
     }
 
-    if ((bool)scan_phy_state == true)
+    if ((bool)use_1m_phy == true)
     {
-        uart_payload.params.all_params.bools.scan_phy.state = RE_CA_BOOL_ENABLE;
+        uart_payload.params.all_params.bools.use_1m_phy.state = RE_CA_BOOL_ENABLE;
     }
     else
     {
-        uart_payload.params.all_params.bools.scan_phy.state = RE_CA_BOOL_DISABLE;
+        uart_payload.params.all_params.bools.use_1m_phy.state = RE_CA_BOOL_DISABLE;
     }
 
     if ((bool)ch_37_state == true)
@@ -238,15 +236,15 @@ api_send_all(
         uart_payload.params.all_params.bools.ch_39.state = RE_CA_BOOL_DISABLE;
     }
 
-    data_length = sizeof(data);
+    uart_payload.params.all_params.max_adv_len = max_adv_len;
 
-    if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
+    if (RE_SUCCESS != re_ca_uart_encode(data.buf, &data_length, &uart_payload))
     {
         res = (-1);
     }
     else
     {
-        terminal_send_msg((uint8_t *)data, data_length);
+        terminal_send_msg((uint8_t *)data.buf, data_length);
 #ifndef RUUVI_ESP
         dbus_check_new_messages();
 #endif
@@ -258,24 +256,23 @@ api_send_all(
 int8_t
 api_send_led_ctrl(const uint16_t time_interval_ms)
 {
-    int8_t               res          = 0;
-    re_ca_uart_payload_t uart_payload = { 0 };
-    uint8_t              data[BUFFER_PAYLOAD_SIZE];
-    uint8_t              data_length;
+    int8_t                                         res          = 0;
+    re_ca_uart_payload_t                           uart_payload = { 0 };
+    re_ca_uart_mosi_payload_buf_encoded_led_ctrl_t data;
+    uint8_t                                        data_length = sizeof(data.buf);
 
     print_dbgmsgnoarg("Enter\n");
 
     uart_payload.cmd                                    = RE_CA_UART_LED_CTRL;
     uart_payload.params.led_ctrl_param.time_interval_ms = time_interval_ms;
-    data_length                                         = sizeof(data);
 
-    if (RE_SUCCESS != re_ca_uart_encode(data, &data_length, &uart_payload))
+    if (RE_SUCCESS != re_ca_uart_encode(data.buf, &data_length, &uart_payload))
     {
         res = (-1);
     }
     else
     {
-        terminal_send_msg((uint8_t *)data, data_length);
+        terminal_send_msg((uint8_t *)data.buf, data_length);
 #ifndef RUUVI_ESP
         dbus_check_new_messages();
 #endif
