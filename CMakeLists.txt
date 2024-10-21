@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.7)
 
+set(RI_COMM_BLE_PAYLOAD_MAX_LENGTH 48)
+
 if(${ESP_PLATFORM})
 
 string(APPEND CMAKE_C_FLAGS " -DRUUVI_ESP")
@@ -21,6 +23,9 @@ idf_component_register(
             ruuvi.endpoints.c
 )
 
+target_compile_definitions(${COMPONENT_LIB} PRIVATE RI_ADV_EXTENDED_ENABLED=1 RI_COMM_BLE_PAYLOAD_MAX_LENGTH=${RI_COMM_BLE_PAYLOAD_MAX_LENGTH})
+target_compile_definitions(__idf_ruuvi.endpoints.c PRIVATE RI_ADV_EXTENDED_ENABLED=1 RI_COMM_BLE_PAYLOAD_MAX_LENGTH=${RI_COMM_BLE_PAYLOAD_MAX_LENGTH})
+
 else()
 
 project(ruuvi_comm_tester)
@@ -39,15 +44,15 @@ set(COMPONENTS components)
 set(RUUVI_LIB_SOURCES
         src/lib/api.c
         src/lib/parser.c
-	src/lib/dbuscontroller.c
-	src/lib/formated_output.c
+        src/lib/dbuscontroller.c
+        src/lib/formated_output.c
         ${COMPONENTS}/ruuvi.endpoints.c/src/ruuvi_endpoint_ca_uart.c
 )
 
 include_directories(
-	/usr/include 
-	/usr/include/dbus-1.0 
-	/usr/lib/x86_64-linux-gnu/dbus-1.0/include 
+        /usr/include
+        /usr/include/dbus-1.0
+        /usr/lib/x86_64-linux-gnu/dbus-1.0/include
         src
         src/app
         src/lib
@@ -68,6 +73,8 @@ set_target_properties(${ProjectId} PROPERTIES
 
 target_compile_definitions(${ProjectId} PUBLIC
         _DEFAULT_SOURCE
+        RI_ADV_EXTENDED_ENABLED=1
+        RI_COMM_BLE_PAYLOAD_MAX_LENGTH=${RI_COMM_BLE_PAYLOAD_MAX_LENGTH}
 )
 
 target_compile_options(${ProjectId} PUBLIC
@@ -81,7 +88,7 @@ target_compile_options(${ProjectId} PUBLIC
 
 target_link_libraries(${ProjectId}
         pthread
-	dbus-1
+        dbus-1
 )
 
 endif()

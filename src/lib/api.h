@@ -36,12 +36,13 @@ api_send_all(
     uint32_t cmd,
     uint16_t fltr_id,
     uint8_t  fltr_tags_state,
-    uint8_t  coded_phy_state,
-    uint8_t  ext_payload_state,
-    uint8_t  scan_phy_state,
+    uint8_t  use_coded_phy,
+    uint8_t  use_2m_phy,
+    uint8_t  use_1m_phy,
     uint8_t  ch_37_state,
     uint8_t  ch_38_state,
-    uint8_t  ch_39_state);
+    uint8_t  ch_39_state,
+    uint8_t  max_adv_len);
 
 int8_t
 api_send_led_ctrl(const uint16_t time_interval_ms);
