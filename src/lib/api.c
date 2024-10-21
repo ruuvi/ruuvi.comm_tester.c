@@ -125,10 +125,10 @@ api_send_get_device_id(uint32_t cmd)
 int8_t
 api_send_fltr_id(uint32_t cmd, uint16_t id)
 {
-    int8_t                                        res          = 0;
-    re_ca_uart_payload_t                          uart_payload = { 0 };
+    int8_t                                            res          = 0;
+    re_ca_uart_payload_t                              uart_payload = { 0 };
     re_ca_uart_mosi_payload_buf_encoded_set_fltr_id_t data;
-    uint8_t                                       data_length = sizeof(data.buf);
+    uint8_t                                           data_length = sizeof(data.buf);
 
     print_dbgmsgnoarg("Enter\n");
 
@@ -163,10 +163,10 @@ api_send_all(
     uint8_t  ch_39_state,
     uint8_t  max_adv_len)
 {
-    int8_t               res          = 0;
-    re_ca_uart_payload_t uart_payload = { 0 };
+    int8_t                                           res          = 0;
+    re_ca_uart_payload_t                             uart_payload = { 0 };
     re_ca_uart_mosi_payload_buf_encoded_all_params_t data;
-    uint8_t              data_length = sizeof(data.buf);
+    uint8_t                                          data_length = sizeof(data.buf);
 
     print_dbgmsgnoarg("Enter\n");
 

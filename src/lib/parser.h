@@ -45,7 +45,6 @@ typedef enum parser_state_e
  */
 #define RE_CA_UART_PARSER_RI_COMM_MESSAGE_MAX_LENGTH (RE_CA_UART_PARSER_BUFFER_SIZE - (3 + 2 + 1 + 1))
 
-
 /**
  * @brief Parser message buffer
  */

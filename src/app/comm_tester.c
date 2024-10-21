@@ -25,14 +25,14 @@
 #define MAX_PARAMS_NUM_SIZE 255
 #define IS_PAYLOAD_SET(x)   (x->is_set)
 
-#define DEFAULT_FLTR_ID_NUM     0
-#define DEFAULT_FLTR_TAGS_NUM   1
-#define DEFAULT_CODED_PHY_NUM   2
-#define DEFAULT_EXT_PAYLOAD_NUM 3
-#define DEFAULT_SCAN_PHY_NUM    4
-#define DEFAULT_CH_37_NUM       5
-#define DEFAULT_CH_38_NUM       6
-#define DEFAULT_CH_39_NUM       7
+#define DEFAULT_FLTR_ID_NUM       0
+#define DEFAULT_FLTR_TAGS_NUM     1
+#define DEFAULT_USE_CODED_PHY_NUM 2
+#define DEFAULT_USE_2M_PHY_NUM    3
+#define DEFAULT_USE_1M_PHY_NUM    4
+#define DEFAULT_CH_37_NUM         5
+#define DEFAULT_CH_38_NUM         6
+#define DEFAULT_CH_39_NUM         7
 
 static void
 help(void)
@@ -47,11 +47,12 @@ help(void)
     print_logmsgnofuncnoarg("-c7 : set channel 37 value\n");
     print_logmsgnofuncnoarg("-c8 : set channel 38 value\n");
     print_logmsgnofuncnoarg("-c9 : set channel 39 value\n");
+    print_logmsgnofuncnoarg("-m <max_adv_len>: set max extended advertisement len\n");
     print_logmsgnofuncnoarg("-gi : get device id\n");
     print_logmsgnofuncnoarg("-l <ms> : turn on LED for <ms>\n");
     print_logmsgnofuncnoarg("-o : disable report output\n");
     print_logmsgnofuncnoarg("-r : run receiver mode\n");
-    print_logmsgnofuncnoarg("-b : run receiver in backgroung mode\n");
+    print_logmsgnofuncnoarg("-b : run receiver in background mode\n");
     print_logmsgnofuncnoarg("-h : help\n");
 }
 
@@ -72,23 +73,23 @@ typedef struct
 {
     comm_tester_param_input_t fltr_id;
     comm_tester_param_input_t fltr_tags_state;
-    comm_tester_param_input_t coded_phy_state;
-    comm_tester_param_input_t ext_payload_state;
-    comm_tester_param_input_t scan_phy_state;
+    comm_tester_param_input_t use_coded_phy_state;
+    comm_tester_param_input_t use_2m_phy_state;
+    comm_tester_param_input_t use_1m_phy_state;
     comm_tester_param_input_t ch_37_state;
     comm_tester_param_input_t ch_38_state;
     comm_tester_param_input_t ch_39_state;
+    comm_tester_param_input_t max_adv_len;
     uint32_t                  all_state;
 } comm_tester_input_t;
 
-comm_tester_input_t        in;
-comm_tester_param_input_t *in_array[] = {
-    &in.fltr_id,        &in.fltr_tags_state, &in.coded_phy_state, &in.ext_payload_state,
-    &in.scan_phy_state, &in.ch_37_state,     &in.ch_38_state,     &in.ch_39_state,
-};
+comm_tester_input_t        in         = { 0 };
+comm_tester_param_input_t *in_array[] = { &in.fltr_id,          &in.fltr_tags_state,  &in.use_coded_phy_state,
+                                          &in.use_2m_phy_state, &in.use_1m_phy_state, &in.ch_37_state,
+                                          &in.ch_38_state,      &in.ch_39_state };
 
 uint32_t cmd_array[] = {
-    RE_CA_UART_SET_FLTR_ID,      RE_CA_UART_SET_FLTR_TAGS, RE_CA_UART_SET_CODED_PHY, RE_CA_UART_SET_EXT_PAYLOAD,
+    RE_CA_UART_SET_FLTR_ID,      RE_CA_UART_SET_FLTR_TAGS, RE_CA_UART_SET_CODED_PHY, RE_CA_UART_SET_SCAN_2MB_PHY,
     RE_CA_UART_SET_SCAN_1MB_PHY, RE_CA_UART_SET_CH_37,     RE_CA_UART_SET_CH_38,     RE_CA_UART_SET_CH_39,
 };
 
@@ -149,19 +150,25 @@ main(int argc, char *argv[])
                     break;
                 case 'p':
                 case 'P':
-                    param_num = DEFAULT_CODED_PHY_NUM;
+                    param_num = DEFAULT_USE_CODED_PHY_NUM;
                     break;
                 case 's':
                 case 'S':
-                    param_num = DEFAULT_SCAN_PHY_NUM;
+                    param_num = DEFAULT_USE_1M_PHY_NUM;
                     break;
                 case 'e':
                 case 'E':
-                    param_num = DEFAULT_EXT_PAYLOAD_NUM;
+                    param_num = DEFAULT_USE_2M_PHY_NUM;
                     break;
                 case 'l':
                 case 'L':
                     led_ctrl = atoi(argv[i + 1]);
+                    break;
+                case 'm':
+                case 'M':
+                    in.max_adv_len.payload = atoi(argv[i + 1]);
+                    in.max_adv_len.is_set  = PAYLOAD_INPUT_YES;
+                    break;
                 case 'g':
                 case 'G':
                     switch (argv[i][2])
@@ -237,19 +244,19 @@ main(int argc, char *argv[])
         {
             if (terminal_open(deviceCom, false, terminal_task_priority) == 0)
             {
-
                 if (in.all_state >= MAX_PARAMS_NUM_SIZE)
                 {
-                    res = api_send_all(
+                    res = (int)api_send_all(
                         RE_CA_UART_SET_ALL,
                         (uint16_t)in_array[DEFAULT_FLTR_ID_NUM]->payload,
                         (uint8_t)in_array[DEFAULT_FLTR_TAGS_NUM]->payload,
-                        (uint8_t)in_array[DEFAULT_CODED_PHY_NUM]->payload,
-                        (uint8_t)in_array[DEFAULT_EXT_PAYLOAD_NUM]->payload,
-                        (uint8_t)in_array[DEFAULT_SCAN_PHY_NUM]->payload,
+                        (uint8_t)in_array[DEFAULT_USE_CODED_PHY_NUM]->payload,
+                        (uint8_t)in_array[DEFAULT_USE_2M_PHY_NUM]->payload,
+                        (uint8_t)in_array[DEFAULT_USE_1M_PHY_NUM]->payload,
                         (uint8_t)in_array[DEFAULT_CH_37_NUM]->payload,
                         (uint8_t)in_array[DEFAULT_CH_38_NUM]->payload,
-                        (uint8_t)in_array[DEFAULT_CH_39_NUM]->payload);
+                        (uint8_t)in_array[DEFAULT_CH_39_NUM]->payload,
+                        (uint8_t)in.max_adv_len.payload);
                 }
                 else
                 {
