@@ -8,7 +8,9 @@
 #include "parser.h"
 #include "gtest/gtest.h"
 #include "ruuvi_endpoint_ca_uart.h"
+#include <stdint.h>
 #include <string>
+#include <array>
 
 using namespace std;
 
