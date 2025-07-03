@@ -206,13 +206,13 @@ terminal_open(char *device_address, bool rx_enable, int task_priority)
         }
     }
 #else
-    terminal.rx_parse_task_manager = NULL;
-    terminal.rx_task_manager = NULL;
+    terminal.rx_parse_task_manager  = NULL;
+    terminal.rx_task_manager        = NULL;
     const uart_config_t uart_config = {
         .data_bits = UART_DATA_8_BITS, //!< Only supported option my nRF52811
         .stop_bits = UART_STOP_BITS_1, //!< Only supported option by nRF52811
         .baud_rate = DEFAULT_BAUDRATE,
-        .parity = RB_PARITY_ENABLED ? UART_PARITY_ODD : UART_PARITY_DISABLE, // XXX
+        .parity    = RB_PARITY_ENABLED ? UART_PARITY_ODD : UART_PARITY_DISABLE, // XXX
         .flow_ctrl = RB_HWFC_ENABLED ? UART_HW_FLOWCTRL_CTS_RTS : UART_HW_FLOWCTRL_DISABLE,
     };
     uart_param_config(UART_NUM_1, &uart_config);
