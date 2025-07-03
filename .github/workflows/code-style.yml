@@ -14,12 +14,18 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
 
-      - name: Install Clang-Format 14
+      - name: Install tools
         run: |
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main"
           sudo apt-get update
-          sudo apt-get install -y clang-format-14
+          sudo apt-get install -y wget
+
+      - name: Install clang-format-18
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18
+          sudo apt-get update
+          sudo apt-get install -y clang-format-18
 
       - name: Run clang-format
         run: ./clang_format_all.sh
